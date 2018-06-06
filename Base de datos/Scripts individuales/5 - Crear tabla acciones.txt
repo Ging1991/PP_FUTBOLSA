@@ -1,0 +1,23 @@
+-- drop table fut_acciones;
+
+CREATE TABLE public.fut_acciones (
+    id_accion bigint NOT NULL,
+    id_club bigint,
+    ultimo_precio bigint,
+    cierre_ayer bigint,
+    cierre_semanal bigint,
+    cierre_mensual bigint,
+    
+    CONSTRAINT fut_acciones_pkey PRIMARY KEY (id_accion),
+    CONSTRAINT fk_id_club FOREIGN KEY (id_club)
+        REFERENCES public.fut_clubes (id_club) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.fut_acciones
+    OWNER to postgres;

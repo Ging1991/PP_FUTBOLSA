@@ -1,0 +1,205 @@
+-- Paso 1: creo la base de datos
+
+-- DROP DATABASE "FUT_FUTBOLSA";
+
+CREATE DATABASE "FUT_FUTBOLSA"
+    WITH 
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'Spanish_Argentina.1252'
+    LC_CTYPE = 'Spanish_Argentina.1252'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1;
+
+-- Paso 2: Creo la tabla usuarios
+
+-- drop table fut_usuarios;
+-- drop sequence sec_id_usuarios;
+
+create sequence sec_id_usuarios
+    start with 1
+    increment by 1
+    maxvalue 99999
+    minvalue 1;
+        
+CREATE TABLE public.FUT_USUARIOS (
+    ID bigint default nextval('sec_id_usuarios'),
+    DINERO bigint,
+    DESCRIPCION text,
+    NOMBRE text,
+    PASSWORD text,
+    PRIMARY KEY (ID),
+    CONSTRAINT usuarios_nombre_unico UNIQUE (NOMBRE)
+)
+WITH (
+    OIDS = FALSE
+);
+
+ALTER TABLE public.FUT_USUARIOS
+    OWNER to postgres;
+
+-- Paso 3: Creo la tabla jugadores
+
+-- drop table fut_jugadores;
+
+CREATE TABLE public.fut_jugadores (
+    ID_JUGADOR bigint NOT NULL,
+    RANKING smallint,
+    CONSTRAINT fut_jugadores_pkey PRIMARY KEY (ID_JUGADOR),
+    CONSTRAINT fk_id_jugador FOREIGN KEY (ID_JUGADOR)
+        REFERENCES public.fut_usuarios (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.fut_jugadores
+    OWNER to postgres;
+
+-- Paso 4: Creo la tabla clubes
+
+-- drop table fut_clubes;
+
+CREATE TABLE public.fut_clubes (
+    id_club bigint NOT NULL,
+    posicion smallint,
+    puntaje smallint,
+    emitido bigint,
+    CONSTRAINT fut_clubes_pkey PRIMARY KEY (id_club),
+    CONSTRAINT fk_id_club FOREIGN KEY (id_club)
+        REFERENCES public.fut_usuarios (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.fut_jugadores
+    OWNER to postgres;
+
+Paso 5: Creo la tabla acciones
+
+-- drop table fut_acciones;
+
+CREATE TABLE public.fut_acciones (
+    id_accion bigint NOT NULL,
+    id_club bigint,
+    ultimo_precio bigint,
+    cierre_ayer bigint,
+    cierre_semanal bigint,
+    cierre_mensual bigint,
+    
+    CONSTRAINT fut_acciones_pkey PRIMARY KEY (id_accion),
+    CONSTRAINT fk_id_club FOREIGN KEY (id_club)
+        REFERENCES public.fut_clubes (id_club) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.fut_acciones
+    OWNER to postgres;
+Paso 6: Creo la tabla transacciones
+
+-- drop table fut_transacciones;
+
+CREATE TABLE public.fut_transacciones (
+    id_comprador bigint,
+    id_vendedor bigint,
+    id_accion bigint,
+    cantidad int,
+    precio_unitario bigint,
+    fecha date,
+    
+    CONSTRAINT fk_id_comprador FOREIGN KEY (id_comprador)
+        REFERENCES public.fut_usuarios (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT fk_id_vendedor FOREIGN KEY (id_vendedor)
+        REFERENCES public.fut_usuarios (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT fk_id_accion FOREIGN KEY (id_accion)
+        REFERENCES public.fut_acciones (id_accion) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.fut_transacciones
+    OWNER to postgres;
+Paso 7: Creo la tabla ordenes
+
+-- drop sequence sec_id_ordenes
+
+create sequence sec_id_ordenes
+    start with 1
+    increment by 1
+    maxvalue 99999
+    minvalue 1;
+
+-- drop table fut_ordenes;
+
+CREATE TABLE public.fut_ordenes (
+    id_orden bigint default nextval('sec_id_ordenes'),
+    tipo char(1),
+    id_usuario bigint,
+    id_accion bigint,
+    cantidad int,
+    precio_unitario bigint,
+    fecha date,
+    total boolean,
+    
+    CONSTRAINT fk_id_usuario FOREIGN KEY (id_usuario)
+        REFERENCES public.fut_usuarios (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT fk_id_accion FOREIGN KEY (id_accion)
+        REFERENCES public.fut_acciones (id_accion) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.fut_ordenes
+    OWNER to postgres;
+
+-- Paso 8: Creo la tabla posesiones
+
+-- drop table fut_posesiones;
+
+CREATE TABLE public.fut_posesiones (
+    id_jugador bigint,
+    id_accion bigint,
+    cantidad int,
+    
+    CONSTRAINT fk_id_jugador FOREIGN KEY (id_jugador)
+        REFERENCES public.fut_jugadores (id_jugador) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION,
+    CONSTRAINT fk_id_accion FOREIGN KEY (id_accion)
+        REFERENCES public.fut_acciones (id_accion) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.fut_posesiones
+    OWNER to postgres;

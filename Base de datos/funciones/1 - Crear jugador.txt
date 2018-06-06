@@ -1,0 +1,21 @@
+-- DROP FUNCTION public.crearjugador(character varying, character varying);
+
+CREATE OR REPLACE FUNCTION public.crear_jugador(
+	p_nombre character varying,
+	p_password character varying)
+    RETURNS void
+    LANGUAGE 'plpgsql'
+
+AS $BODY$
+
+	begin
+        insert into fut_jugadores
+			(usuario, password, biografia, dinero, imagen)
+		values
+        	(p_nombre, p_password, 'Nuevo usuario', 10000, '-');    
+    end;
+    
+$BODY$;
+
+ALTER FUNCTION public.crear_jugador(character varying, character varying)
+    OWNER TO postgres;
