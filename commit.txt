@@ -1,0 +1,4 @@
+cd C:\Users\Carlos\Desktop\FutBolsa
+git add -A
+git commit -m "MENSAJE"
+git push
