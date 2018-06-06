@@ -25,3 +25,4 @@
 - crear un ranking de jugadores que incluya las acciones monetarizadas
 - crear ranking de clubes que incluyan presidentes
 
+- pendientes de pruebas
