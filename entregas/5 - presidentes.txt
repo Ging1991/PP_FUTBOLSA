@@ -1,0 +1,14 @@
+CAPA PERSISTENCIA
+presidente . update presidente de club (jugador, club)
+
+CAPA NEGOCIOS
+presidente . elegir presidente (club)
+presidente . definir dividendo (jugador, club, tipo, precio)
+presidente . get presidente (club) return jugador
+
+CAPA VISTA
+pagina administrador
+	cuadro clubes con boton elegir presidente
+
+pagina presidente
+	clubes . definir dividendo

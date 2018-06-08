@@ -1,0 +1,10 @@
+CAPA PERSISTENCIA
+operador . insert (operacion)
+operador . select operaciones by jugador (jugador)
+
+CAPA NEGOCIOS
+operador . guardar operacion (operacion)
+operador . get operaciones de jugador (jugador)
+
+CAPA VISTA
+cuadro operaciones realizadas (jugador)

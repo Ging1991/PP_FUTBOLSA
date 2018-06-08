@@ -1,0 +1,12 @@
+CAPA PERSISTENCIA
+operador . select ordenes by club tipo (club tipo)
+operador . delete orden (orden)
+operador . update orden set cantidad (orden)
+operador . insert operacion (operacion)
+
+CAPA NEGOCIOS
+operador . concretar operacion (orden)
+operador . guardar operacion (operacion)
+
+CAPA VISTA
+-

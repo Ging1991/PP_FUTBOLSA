@@ -1,0 +1,9 @@
+CAPA PERSISTENCIA
+delete orden(orden)
+
+CAPA NEGOCIOS
+cancelar orden (orden)
+
+CAPA VISTA
+cuadro ordenes pendientes (jugador)
+boton cancelar (orden)

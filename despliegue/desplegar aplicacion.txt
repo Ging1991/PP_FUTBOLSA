@@ -5,4 +5,4 @@ Ejecutar los scritps dentro de base de datos en orden
 mvm package (dentro de la direccion de la carpeta)
 
 3 - subri el war a heroku
-heroku deploy:war --war C:\Users\Carlos\Desktop\FutBolsa\proyecto_java\futbolsa\target\futbolsa-1.0-SNAPSHOT.war --app futbolsa
+heroku deploy:war --war C:\Users\Carlos\Desktop\FutBolsa\proyecto\futbolsa\target\futbolsa-1.0-SNAPSHOT.war --app futbolsa

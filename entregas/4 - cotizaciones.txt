@@ -1,0 +1,11 @@
+CAPA PERSISTENCIA
+cotizador . insert (cierre)
+cotizador . select cierre by club (club, fecha)
+cotizador . update cierre set precio (cierre)
+
+CAPA NEGOCIOS
+cotizador . guardar cierre (cierre)
+cotizador . get todas las cotizaciones ()
+
+CAPA VISTA
+cuadro cotizaciones, con boton para operar directamente
