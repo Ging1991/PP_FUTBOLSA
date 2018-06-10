@@ -10,8 +10,8 @@ public class AdministradorTest {
 		return Administrador.nombreDeClubLibre(nombre);
 	}
 	
-	public static void getTodosLosClubesTest() {
-		List<Club> clubes = Administrador.getTodosLosClubes();
+	public static void traerClubesTest() {
+		List<Club> clubes = Administrador.traerClubes();
 		System.out.println("Lista de todos los clubes:");
 		for (Club club : clubes)
 			System.out.println(club.getNombre());
@@ -26,11 +26,16 @@ public class AdministradorTest {
 		}
 	}
 	
+	public static Club traerClubPorIDTest(Integer id) {
+		return Administrador.traerClubPorID(id);
+	}
+	
 	public static void main(String[] args) {
-		String nombre = "River";
+		String nombre = "San Lorenzo";
 		System.out.println("Nombre libre: " + nombreLibreTest(nombre));
+		System.out.println("ID 1: "+traerClubPorIDTest(1).getNombre());
 		crearClubTest(nombre);
-		getTodosLosClubesTest();
+		traerClubesTest();
 	}
 
 }

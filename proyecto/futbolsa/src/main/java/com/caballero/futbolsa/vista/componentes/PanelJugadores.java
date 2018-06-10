@@ -11,7 +11,7 @@ public class PanelJugadores extends VerticalLayout{
 	private static final long serialVersionUID = 1L;
 
 	public PanelJugadores() {
-		List<Jugador> jugadores = Identificador.getTodosLosJugadores();
+/*		List<Jugador> jugadores = Identificador.getTodosLosJugadores();
 		
 		ComboBox lista = new ComboBox("Seleccione un jugador");
 		lista.setItemCaptionMode(ItemCaptionMode.EXPLICIT_DEFAULTS_ID);
@@ -21,7 +21,7 @@ public class PanelJugadores extends VerticalLayout{
 			lista.setItemCaption(jugador.getJugador_id(), jugador.getUsuario());
 		}
 		addComponent(lista);
-		
+		*/
 	}
 
 }

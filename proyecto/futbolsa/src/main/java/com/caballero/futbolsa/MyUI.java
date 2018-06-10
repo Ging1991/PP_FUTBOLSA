@@ -4,10 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.annotation.WebServlet;
 import com.caballero.futbolsa.vista.paginas.PaginaAdministrador;
-import com.caballero.futbolsa.vista.paginas.PaginaIdentificacion;
+import com.caballero.futbolsa.vista.paginas.PaginaIniciarSesion;
 import com.caballero.futbolsa.vista.paginas.PaginaOperar;
 import com.caballero.futbolsa.vista.paginas.PaginaPerfil;
 import com.caballero.futbolsa.vista.paginas.PaginaPrincipal;
+import com.caballero.futbolsa.vista.paginas.PaginaRegistrarJugador;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.navigator.Navigator;
@@ -28,11 +29,11 @@ public class MyUI extends UI {
 		
 		navegador = new Navigator(this, this);
 		navegador.addView(PaginaAdministrador.NOMBRE, new PaginaAdministrador());
-		navegador.addView(PaginaIdentificacion.NOMBRE, new PaginaIdentificacion());
+		navegador.addView(PaginaIniciarSesion.NOMBRE, new PaginaIniciarSesion());
 		navegador.addView(PaginaOperar.NOMBRE, new PaginaOperar());
 		navegador.addView(PaginaPerfil.NOMBRE, new PaginaPerfil());
 		navegador.addView(PaginaPrincipal.NOMBRE, new PaginaPrincipal());
-
+		navegador.addView(PaginaRegistrarJugador.NOMBRE, new PaginaRegistrarJugador());
 		navegador.navigateTo(PaginaPrincipal.NOMBRE);
 		}
 	

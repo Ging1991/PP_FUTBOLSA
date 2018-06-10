@@ -39,7 +39,7 @@ public class FormularioRegistrarUsuario extends Panel {
 		
 		try {
 			Identificador.registrarJugador(nombre, password);
-			jugador = Identificador.getJugadorByNombre(nombre);
+			jugador = Identificador.traerJugadorPorUsuario(nombre);
 			MyUI ui = (MyUI) UI.getCurrent();
 			ui.setSesion("jugador_activo", jugador);
 			ui.irPagina(PaginaPrincipal.NOMBRE);

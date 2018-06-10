@@ -11,8 +11,8 @@ public class PanelPosesiones extends VerticalLayout {
 	private static final long serialVersionUID = 1L;
 
 	public PanelPosesiones(Jugador jugador) {
-		List<PosesionVO> posesiones = Custodio.getPosesionesVODeJugador(jugador);
-		addComponent(new Label("ACCIONES QUE POSEE"));
+		List<PosesionVO> posesiones = Custodio.traerAccionesVODeJugador(jugador);
+		addComponent(new Label("ACCIONES"));
 		for (PosesionVO posesion : posesiones)
 			addComponent(new Label(posesion.getNombre()+": "+posesion.getCantidad()));
 	}

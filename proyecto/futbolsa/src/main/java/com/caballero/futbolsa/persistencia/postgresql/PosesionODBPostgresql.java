@@ -7,16 +7,16 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import com.caballero.futbolsa.persistencia.ODB;
-import com.caballero.futbolsa.persistencia.interfases.CustodioODB;
+import com.caballero.futbolsa.persistencia.interfases.PosesionODB;
 import com.caballero.futbolsa.persistencia.pojos.Club;
 import com.caballero.futbolsa.persistencia.pojos.Jugador;
 import com.caballero.futbolsa.persistencia.pojos.Posesion;
 import com.caballero.futbolsa.persistencia.pojos.PosesionVO;
 
-public class CustodioODBPostgresql extends ODB implements CustodioODB{
+public class PosesionODBPostgresql extends ODB implements PosesionODB{
 
 	@Override
-	public void insertPosesion(Posesion posesion) {
+	public void insert(Posesion posesion) {
 		Integer jugador = posesion.getJugador_id();
 		Integer club = posesion.getClub_id();
 		Integer cantidad = posesion.getCantidad();
@@ -26,7 +26,7 @@ public class CustodioODBPostgresql extends ODB implements CustodioODB{
 	}
 
 	@Override
-	public void deletePosesion(Posesion posesion) {
+	public void delete(Posesion posesion) {
 		Integer jugador = posesion.getJugador_id();
 		Integer club = posesion.getClub_id();
 		String consulta = "delete from fut_posesiones ";
@@ -35,7 +35,7 @@ public class CustodioODBPostgresql extends ODB implements CustodioODB{
 	}
 
 	@Override
-	public void updatePosesion(Posesion posesion) {
+	public void updateCantidad(Posesion posesion) {
 		Integer jugador = posesion.getJugador_id();
 		Integer club = posesion.getClub_id();
 		Integer cantidad = posesion.getCantidad();
@@ -46,7 +46,7 @@ public class CustodioODBPostgresql extends ODB implements CustodioODB{
 	}
 
 	@Override
-	public List<Posesion> selectPosesionByJugador(Jugador jugador) {
+	public List<Posesion> selectByJugador(Jugador jugador) {
 		List<Posesion> posesiones = new ArrayList<Posesion>();
 		String comandoSQL = "select jugador_id, club_id, cantidad from fut_posesiones ";
 		comandoSQL = comandoSQL + "where (jugador_id = "+jugador.getJugador_id()+");";  
@@ -76,37 +76,7 @@ public class CustodioODBPostgresql extends ODB implements CustodioODB{
 	}
 
 	@Override
-	public Posesion selectPosesionByJugadorClub(Jugador jugador, Club club) {
-		Posesion posesion = null;
-		String comandoSQL = "select jugador_id, club_id, cantidad from fut_posesiones ";
-		comandoSQL = comandoSQL + "where (jugador_id = "+jugador.getJugador_id()+" and club_id = "+club.getClub_id()+");";  
-		
-		try { 
-			Class.forName(driver); 
-			Connection conexion = DriverManager.getConnection(cadenaConexion, usuarioBD, passwordBD); 
-			Statement sentencia = conexion.createStatement ();
-			ResultSet resultados = sentencia.executeQuery(comandoSQL);			
-
-			if (resultados.next())
-				posesion = new Posesion(
-						resultados.getInt("jugador_id"),
-						resultados.getInt("club_id"),
-						resultados.getInt("cantidad"));
-			
-			resultados.close();
-			sentencia.close();
-			conexion.close();
-			
-		}catch(Exception e) {
-			System.out.println(comandoSQL);
-			e.printStackTrace();
-		}
-			
-		return posesion;
-	}
-
-	@Override
-	public List<PosesionVO> selectPosesionVOByJugador(Jugador jugador) {
+	public List<PosesionVO> selectVOByJugador(Jugador jugador) {
 		List<PosesionVO> posesiones = new ArrayList<PosesionVO>();
 		String comandoSQL = "select jugador_id, nombre, cantidad from fut_v_posesiones ";
 		comandoSQL = comandoSQL + "where (jugador_id = "+jugador.getJugador_id()+");";  
@@ -133,6 +103,36 @@ public class CustodioODBPostgresql extends ODB implements CustodioODB{
 		}
 			
 		return posesiones;	
+	}
+
+	@Override
+	public Posesion selectByJugadorClub(Jugador jugador, Club club) {
+		Posesion posesion = null;
+		String comandoSQL = "select jugador_id, club_id, cantidad from fut_posesiones ";
+		comandoSQL = comandoSQL + "where (jugador_id = "+jugador.getJugador_id()+" and club_id = "+club.getClub_id()+");";  
+		
+		try { 
+			Class.forName(driver); 
+			Connection conexion = DriverManager.getConnection(cadenaConexion, usuarioBD, passwordBD); 
+			Statement sentencia = conexion.createStatement ();
+			ResultSet resultados = sentencia.executeQuery(comandoSQL);			
+
+			if (resultados.next())
+				posesion = new Posesion(
+						resultados.getInt("jugador_id"),
+						resultados.getInt("club_id"),
+						resultados.getInt("cantidad"));
+			
+			resultados.close();
+			sentencia.close();
+			conexion.close();
+			
+		}catch(Exception e) {
+			System.out.println(comandoSQL);
+			e.printStackTrace();
+		}
+			
+		return posesion;
 	}
 		
 }

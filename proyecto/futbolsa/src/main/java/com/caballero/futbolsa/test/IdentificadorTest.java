@@ -1,21 +1,16 @@
 package com.caballero.futbolsa.test;
 
-import java.util.List;
 import com.caballero.futbolsa.negocios.Identificador;
 import com.caballero.futbolsa.persistencia.pojos.Jugador;
 
 public class IdentificadorTest {
 	
-	public static Jugador getJugadorByUsuarioTest(String usuario) {
-		return Identificador.getJugadorByNombre(usuario);
+	public static Jugador traerJugadorPorUsuarioTest(String usuario) {
+		return Identificador.traerJugadorPorUsuario(usuario);
 	}
 	
-	public static void getTodosLosJugadoresTest() {
-		List<Jugador> jugadores = Identificador.getTodosLosJugadores();
-		System.out.println("Lista de todos los jugadores:");
-		for(Jugador jugador: jugadores)
-			System.out.println(jugador.getUsuario());
-		System.out.println("Fin de la lista:"+jugadores.size()+" jugadores");
+	public static Jugador traerJugadorPorIDTest(Integer id) {
+		return Identificador.traerJugadorPorID(id);
 	}
 	
 	public static void registrarJugadorTest(String usuario, String password) {
@@ -42,10 +37,11 @@ public class IdentificadorTest {
 	}
 
 	public static void main(String[] args) {
-		String nombre = "Jorge";
+		String nombre = "Cyntia";
+		System.out.println(traerJugadorPorIDTest(1).getUsuario());
 		registrarJugadorTest(nombre, "123");
-		System.out.println(getJugadorByUsuarioTest(nombre).getUsuario());
-		getTodosLosJugadoresTest();
+		System.out.println(traerJugadorPorUsuarioTest(nombre).getUsuario());
+		iniciarSesionTest(nombre, "123");
 	}
 
 }

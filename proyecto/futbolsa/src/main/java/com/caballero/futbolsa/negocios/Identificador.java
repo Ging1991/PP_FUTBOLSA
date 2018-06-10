@@ -1,41 +1,40 @@
 package com.caballero.futbolsa.negocios;
 
-import java.util.List;
-import com.caballero.futbolsa.persistencia.interfases.IdentificadorOBD;
+import com.caballero.futbolsa.persistencia.interfases.JugadorODB;
 import com.caballero.futbolsa.persistencia.pojos.Jugador;
-import com.caballero.futbolsa.persistencia.postgresql.IdentificadorOBDPostgresql;
+import com.caballero.futbolsa.persistencia.postgresql.JugadorOBDPostgresql;
 
 public class Identificador {
 
-	public static Jugador getJugadorByNombre(String nombre) {
-		IdentificadorOBD odb = new IdentificadorOBDPostgresql();
-		return odb.selectJugadorByUsuario(nombre);
-	}
-
-	public static List<Jugador> getTodosLosJugadores() {
-		IdentificadorOBD odb = new IdentificadorOBDPostgresql();
-		return odb.selectJugadorTodos();
-	}
-
-	public static void registrarJugador(String nombre, String password) throws Exception {
-		if (getJugadorByNombre(nombre) != null)
-			throw new Exception("Ya existe un jugador registrado con el nombre: "+nombre);
+	public static void registrarJugador(String usuario, String password) throws Exception {
+		if (traerJugadorPorUsuario(usuario) != null)
+			throw new Exception("Ya existe un jugador registrado con el nombre de usuario: "+usuario);
 		
-		Jugador jugador = new Jugador(-1, nombre, password, -1);
-		IdentificadorOBD obd = new IdentificadorOBDPostgresql();
-		obd.insertJugador(jugador);
+		Jugador jugador = new Jugador(-1, usuario, password, -1);
+		JugadorODB odb = new JugadorOBDPostgresql();
+		odb.insert(jugador);
 	}
 	
-	public static Jugador iniciarSesion(String nombre, String password) throws Exception {
-		Jugador jugador = getJugadorByNombre(nombre);
+	public static Jugador iniciarSesion(String usuario, String password) throws Exception {
+		Jugador jugador = traerJugadorPorUsuario(usuario);
 		
 		if (jugador == null)
-			throw new Exception("No existe un jugador registrado con el nombre: "+nombre);
+			throw new Exception("No existe un jugador registrado con el nombre de usuario: "+usuario);
 		
 		if(!jugador.getPassword().equals(password))
 			throw new Exception("Password incorrecta");
 					
 		return jugador;
+	}
+	
+	public static Jugador traerJugadorPorUsuario(String usuario) {
+		JugadorODB odb = new JugadorOBDPostgresql();
+		return odb.selectByUsuario(usuario);
+	}
+	
+	public static Jugador traerJugadorPorID(Integer id) {
+		JugadorODB odb = new JugadorOBDPostgresql();
+		return odb.selectByID(id);
 	}
 	
 }

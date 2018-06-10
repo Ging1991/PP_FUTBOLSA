@@ -2,6 +2,7 @@ package com.caballero.futbolsa.vista.paginas;
 
 import com.caballero.futbolsa.MyUI;
 import com.caballero.futbolsa.persistencia.pojos.Jugador;
+import com.caballero.futbolsa.vista.componentes.Cabecera;
 import com.caballero.futbolsa.vista.formularios.FormularioColocarOrden;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -15,6 +16,8 @@ public class PaginaOperar extends VerticalLayout implements View{
 	@Override
 	public void enter(ViewChangeEvent event) {
 		removeAllComponents();
+		addComponent(Cabecera.getCabecera());
+
 		MyUI ui = (MyUI) UI.getCurrent();
 		Jugador jugador = (Jugador) ui.getSesion("jugador_activo");
 		if (jugador != null)

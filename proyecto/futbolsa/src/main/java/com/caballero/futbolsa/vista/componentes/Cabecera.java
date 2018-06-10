@@ -2,8 +2,15 @@ package com.caballero.futbolsa.vista.componentes;
 
 import com.caballero.futbolsa.MyUI;
 import com.caballero.futbolsa.persistencia.pojos.Jugador;
+import com.caballero.futbolsa.vista.paginas.PaginaAdministrador;
+import com.caballero.futbolsa.vista.paginas.PaginaIniciarSesion;
+import com.caballero.futbolsa.vista.paginas.PaginaOperar;
+import com.caballero.futbolsa.vista.paginas.PaginaPerfil;
+import com.caballero.futbolsa.vista.paginas.PaginaPrincipal;
+import com.caballero.futbolsa.vista.paginas.PaginaRegistrarJugador;
 import com.vaadin.server.ClassResource;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.UI;
@@ -13,12 +20,15 @@ public class Cabecera extends VerticalLayout{
 	private static final long serialVersionUID = 1L;
 	private Image logo;
 	private MenuBar menu;
+	private static Cabecera cabecera;
 	
 	private Cabecera (){
 		menu = crearBarraMenu();
 		
 		logo = new Image(null, new ClassResource("/logo.jpg"));
 		logo.addClickListener(e -> {
+			MyUI ui = (MyUI) UI.getCurrent();
+			ui.irPagina(PaginaPrincipal.NOMBRE);
 		});
 		
 		addComponent(logo);
@@ -32,27 +42,35 @@ public class Cabecera extends VerticalLayout{
 
 	private MenuBar crearBarraMenu() {
 		MenuBar barra = new MenuBar();
+		MyUI ui = (MyUI) UI.getCurrent();
+		Jugador jugador = (Jugador) ui.getSesion("jugador_activo");
 
-		MyUI aplicacionUI = (MyUI) UI.getCurrent();
-		Jugador usuario = new Jugador(1, "", "", 1);
-
-		// Si esta logueado
-		if (usuario != null) {
-			barra.addItem("Operar acciones", e -> {
-			//	aplicacionUI.irPagina(PaginaOperar.NOMBRE);
-			});
-			barra.addItem("Cerrar sesión", e -> {
-				aplicacionUI.setSesion("jugador", null);
-			//	aplicacionUI.irPagina(PaginaPrincipal.NOMBRE);
+		// Si no esta logueado
+		if (jugador == null) {
+			barra.addItem("Iniciar sesion", e -> {ui.irPagina(PaginaIniciarSesion.NOMBRE);});
+			barra.addItem("Registrar usuario", e -> {ui.irPagina(PaginaRegistrarJugador.NOMBRE);});
+			
+		// Si esta logeado
+		} else {
+			barra.addItem("Crear club", e -> {ui.irPagina(PaginaAdministrador.NOMBRE);});
+			barra.addItem("Colocar orden", e -> {ui.irPagina(PaginaOperar.NOMBRE);});
+			barra.addItem("Ver perfil", e -> {ui.irPagina(PaginaPerfil.NOMBRE);});
+			barra.addItem(jugador.getUsuario()+"/Cerrar sesion", e -> {
+				ui.setSesion("jugador_activo", null);
+				ui.irPagina(PaginaPerfil.NOMBRE);
 			});
 			
-		// si no esta logueado
-		}		
+		}
+		
 		return barra;
 	}
 
 	static public Cabecera getCabecera() {
-		return new Cabecera();
+		if (cabecera == null)
+			return cabecera = new Cabecera();
+		
+		cabecera.actualizarCabecera();
+		return cabecera;
 	}
 	
 	public void actualizarCabecera() {

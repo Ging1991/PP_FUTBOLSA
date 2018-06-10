@@ -7,15 +7,15 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import com.caballero.futbolsa.persistencia.ODB;
-import com.caballero.futbolsa.persistencia.interfases.OperadorODB;
+import com.caballero.futbolsa.persistencia.interfases.OrdenODB;
 import com.caballero.futbolsa.persistencia.pojos.Club;
 import com.caballero.futbolsa.persistencia.pojos.Jugador;
 import com.caballero.futbolsa.persistencia.pojos.Orden;
 
-public class OperadorODBPostgresql extends ODB implements OperadorODB{
+public class OrdenODBPostgresql extends ODB implements OrdenODB{
 
 	@Override
-	public void insertOrden(Orden orden) {
+	public void insert(Orden orden) {
 		String consulta = "";
 		consulta = consulta + "insert into fut_ordenes (jugador_id, club_id, tipo, cantidad, precio) ";
 		consulta = consulta + "values ("+ orden.getJugador_id() +", ";
@@ -28,7 +28,23 @@ public class OperadorODBPostgresql extends ODB implements OperadorODB{
 	}
 
 	@Override
-	public List<Orden> selectOrdenByJugador(Jugador jugador) {
+	public void delete(Orden orden) {
+		String consulta = "delete from fut_ordenes where orden_id = "+orden.getOrden_id();	
+		ejecutarSQL(consulta);
+	}
+	
+	@Override
+	public void updateCantidad(Orden orden) {
+		Integer id = orden.getOrden_id();
+		Integer cantidad = orden.getCantidad();
+		String consulta = "update fut_ordenes ";
+		consulta = consulta + "set cantidad = "+cantidad+" "; 
+		consulta = consulta + "where (orden_id = "+id+");";
+		ejecutarSQL(consulta);
+	}
+	
+	@Override
+	public List<Orden> selectByJugador(Jugador jugador) {
 		List<Orden> ordenes = new ArrayList<Orden>();
 		String comandoSQL = "select orden_id, jugador_id, club_id, tipo, cantidad, precio ";
 		comandoSQL = comandoSQL + "from fut_ordenes where jugador_id = "+jugador.getJugador_id()+";";
@@ -61,13 +77,7 @@ public class OperadorODBPostgresql extends ODB implements OperadorODB{
 	}
 
 	@Override
-	public void deleteOrden(Orden orden) {
-		String consulta = "delete fut_ordenes where orden_id = "+orden.getClub_id();	
-		ejecutarSQL(consulta);
-	}
-
-	@Override
-	public List<Orden> selectOrdenByJugadorByTipo(Jugador jugador, String tipo) {
+	public List<Orden> selectByJugadorTipo(Jugador jugador, String tipo) {
 		List<Orden> ordenes = new ArrayList<Orden>();
 		String comandoSQL = "select orden_id, jugador_id, club_id, tipo, cantidad, precio ";
 		comandoSQL = comandoSQL + "from fut_ordenes where jugador_id = "+jugador.getJugador_id()+" and tipo = '"+tipo+"';";
@@ -100,7 +110,7 @@ public class OperadorODBPostgresql extends ODB implements OperadorODB{
 	}
 
 	@Override
-	public List<Orden> selectOrdenByClubByTipo(Club club, String tipo) {
+	public List<Orden> selectByClubTipo(Club club, String tipo) {
 		List<Orden> ordenes = new ArrayList<Orden>();
 		String comandoSQL = "select orden_id, jugador_id, club_id, tipo, cantidad, precio ";
 		comandoSQL = comandoSQL + "from fut_ordenes where club_id = "+club.getClub_id()+" and tipo = '"+tipo+"';";

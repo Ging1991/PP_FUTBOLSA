@@ -10,7 +10,7 @@ public class PanelClubes extends VerticalLayout{
 	private static final long serialVersionUID = 1L;
 
 	public PanelClubes() {
-		List<Club> clubes = Administrador.getTodosLosClubes();
+		List<Club> clubes = Administrador.traerClubes();
 		for (Club club : clubes)
 			addComponent(new Label(club.getNombre()));
 	}

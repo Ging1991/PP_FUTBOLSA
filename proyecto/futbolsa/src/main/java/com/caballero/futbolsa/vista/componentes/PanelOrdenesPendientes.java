@@ -1,7 +1,7 @@
 package com.caballero.futbolsa.vista.componentes;
 
 import java.util.List;
-import com.caballero.futbolsa.negocios.Operador;
+import com.caballero.futbolsa.negocios.Agente;
 import com.caballero.futbolsa.persistencia.pojos.Jugador;
 import com.caballero.futbolsa.persistencia.pojos.Orden;
 import com.vaadin.ui.Button;
@@ -14,13 +14,13 @@ public class PanelOrdenesPendientes extends VerticalLayout {
 
 	public PanelOrdenesPendientes(Jugador jugador) {
 		addComponent(new Label("ORDENES PENDIENTES"));
-		List<Orden> ordenes = Operador.getOrdenesDeJugador(jugador);
+		List<Orden> ordenes = Agente.traerOrdenesDeJugador(jugador);
 
 		for (Orden orden : ordenes) {
 			Label label = new Label(orden.getOrden_id()+"-"+orden.getJugador_id()+"-"+orden.getClub_id()+"-"+orden.getCantidad()+"- $"+orden.getPrecio());
 			Button cancelar = new Button("Cancelar orden");
 			cancelar.addClickListener(e -> {
-				Operador.cancelarOrden(orden);
+				Agente.cancelarOrden(orden);
 			});
 			HorizontalLayout layout = new HorizontalLayout();
 			layout.addComponent(label);

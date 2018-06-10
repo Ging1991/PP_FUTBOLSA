@@ -3,7 +3,7 @@ package com.caballero.futbolsa.vista.formularios;
 import java.util.List;
 import com.caballero.futbolsa.MyUI;
 import com.caballero.futbolsa.negocios.Administrador;
-import com.caballero.futbolsa.negocios.Operador;
+import com.caballero.futbolsa.negocios.Agente;
 import com.caballero.futbolsa.persistencia.pojos.Club;
 import com.caballero.futbolsa.persistencia.pojos.Jugador;
 import com.caballero.futbolsa.vista.paginas.PaginaPrincipal;
@@ -28,7 +28,7 @@ public class FormularioColocarOrden extends Panel {
 
 		inClub = new ComboBox("Seleccione un club");
 		inClub.setItemCaptionMode(ItemCaptionMode.EXPLICIT);
-		List<Club> clubes = Administrador.getTodosLosClubes();
+		List<Club> clubes = Administrador.traerClubes();
 		for (Club club : clubes) {
 			inClub.addItem(club);
 			inClub.setItemCaption(club, club.getNombre());
@@ -67,13 +67,18 @@ public class FormularioColocarOrden extends Panel {
 
 		if (tipo.equals("V"))
 			try {
-				Operador.colocarOrdenDeVenta(jugador, club, cantidad, precio);
+				Agente.colocarOrdenDeVenta(jugador, club, cantidad, precio);
 			} catch (Exception e) {
 				Notification.show(e.getMessage());
 				e.printStackTrace();
 			}
 		else
-			Operador.colocarOrdenDeCompra(jugador, club, cantidad, precio);
+			try {
+				Agente.colocarOrdenDeCompra(jugador, club, cantidad, precio);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		
 		MyUI ui = (MyUI) UI.getCurrent();
 		ui.irPagina(PaginaPrincipal.NOMBRE);
