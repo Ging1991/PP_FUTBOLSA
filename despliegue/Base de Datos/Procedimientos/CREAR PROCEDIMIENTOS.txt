@@ -1,0 +1,166 @@
+-- 1) CALCULAR RANKING DE CLUBES *****************************************************************
+create or replace function calcular_ranking_clubes() returns void as $body$
+	declare
+    	rec_posicion record;
+        cur_posicion cursor for select club_id, posicion from fut_v_ranking_clubes;
+    begin
+    	open cur_posicion;
+        loop
+        	fetch cur_posicion into rec_posicion;
+            exit when not found;
+            
+            -- Actualizo posiciones dentro del ranking
+            update fut_clubes
+			set posicion = rec_posicion.posicion
+			where club_id = rec_posicion.club_id;
+
+        end loop;
+        close cur_posicion;
+    end;
+$body$ language plpgsql;
+
+-- 2) CALCULAR RANKING DE JUGADORES *****************************************************************
+CREATE OR REPLACE FUNCTION public.calcular_ranking_jugadores(
+	)
+    RETURNS void
+    LANGUAGE 'plpgsql'
+
+    COST 100
+    VOLATILE 
+AS $BODY$
+
+	declare
+    	rec_posicion record;
+        cur_posicion cursor for select jugador_id, posicion from fut_v_ranking_jugadores;
+        
+    begin
+    	open cur_posicion;
+        loop
+        	fetch cur_posicion into rec_posicion;
+            exit when not found;
+            
+            -- Actualizo posiciones dentro del ranking
+            update fut_jugadores
+			set posicion = rec_posicion.posicion
+			where jugador_id = rec_posicion.jugador_id;
+
+        end loop;
+        close cur_posicion;
+    end;
+
+$BODY$;
+
+ALTER FUNCTION public.calcular_ranking_jugadores()
+    OWNER TO postgres;
+
+
+-- 3) ELEGIR PRESIDENTE *****************************************************************
+create or replace function elegir_presidente(p_club int) returns void as $body$
+    declare
+    	v_emision bigint;
+        v_posesion bigint;
+        v_accionista bigint;
+        v_club_id bigint;
+    begin
+    	-- Averiguo cuantas acciones estan en posesion de accionistas
+    	select
+		sum(cantidad)
+		into v_emision
+        from fut_v_posesiones
+        where club_id = p_club
+        group by club_id;
+
+		-- Averiguo quien es el accionista que tiene mas acciones
+        select
+	    jugador_id,
+            club_id,
+            cantidad
+        into
+            v_accionista,
+            v_club_id,
+            v_posesion
+        from fut_posesiones
+        where club_id = p_club
+        order by cantidad, jugador_id
+        limit 1;
+        
+        -- Si el mayor accionista tiene mas del 50% se covierte en presidente
+        if ((v_posesion*2)>v_emision) then
+            update fut_clubes
+            set presidente = v_accionista
+            where club_id = p_club;       
+        end if;
+        
+	end;
+$body$ language plpgsql;
+
+
+-- 4) TRIGGER NUEVA ORDEN ***************************************************
+create function fut_f_actualizar_precio() returns trigger language 'plpgsql' as $body$
+	declare
+    	v_precio int;
+    begin
+        -- Se ha cargado una compra
+        if (new.tipo = 'C') then
+          	select precio_compra
+            into v_precio
+            from fut_clubes
+            where club_id = new.club_id;
+
+            if (new.precio > v_precio) then
+                update fut_clubes
+                set precio_compra = new.precio
+                where club_id = new.club_id;
+
+                update fut_clubes
+                set cantidad_compra = new.cantidad
+                where club_id = new.club_id;
+            end if;
+            
+        end if;
+
+        -- Se ha cargado una venta
+        if (new.tipo = 'V') then
+            select precio_venta
+            into v_precio
+            from fut_clubes
+            where club_id = new.club_id;
+
+            if (new.precio < v_precio) then
+                update fut_clubes
+                set precio_venta = new.precio
+                where club_id = new.club_id;
+
+                update fut_clubes
+                set cantidad_venta = new.cantidad
+                where club_id = new.club_id;
+            end if;
+
+        end if;
+
+    	return new;
+	end;
+$body$;
+
+
+create trigger fut_t_actualizar_precio
+	before insert
+    on fut_ordenes
+    for each row
+    execute procedure  fut_f_actualizar_precio();
+
+
+-- INSERTAR UNA NOTICIA Y DEVOLVER EL ID DE LA MISMA *****************************************************************
+create or replace function insertar_noticia(p_contenido text) returns bigint as $body$
+    declare
+    	v_noticia_id bigint;
+    begin
+        v_noticia_id := nextval('sec_id_noticias');
+        
+    	insert into fut_noticias (noticia_id, contenido)
+        values (v_noticia_id, p_contenido);
+        
+        return v_noticia_id;
+	end;
+$body$ language plpgsql;
+

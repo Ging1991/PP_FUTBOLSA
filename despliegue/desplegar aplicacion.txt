@@ -1,8 +1,9 @@
 1 - Actualizar la base de datos
 Ejecutar los scritps dentro de base de datos en orden
 
-2 - crear el war con
-mvm package (dentro de la direccion de la carpeta)
+2 - crear el war con mvn package
+cd C:\Users\Carlos\Desktop\FutBolsa\proyecto\futbolsa
+mvn package
 
 3 - subri el war a heroku
 heroku deploy:war --war C:\Users\Carlos\Desktop\FutBolsa\proyecto\futbolsa\target\futbolsa-1.0-SNAPSHOT.war --app futbolsa

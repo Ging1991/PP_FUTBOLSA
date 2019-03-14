@@ -1,0 +1,23 @@
+-- 3) VISTA CLUBES *******************************************************
+create view fut_v_clubes(club_id, club, presidente_id, presidente, cotizacion,
+	efectivo, div_victoria, div_empate, div_derrota, posicion,
+	cantidad_compra, cantidad_venta, precio_compra, precio_venta) as
+    select
+        c.club_id,
+        c.nombre as club,
+        c.presidente as presidente_id,
+        j.usuario as presidente,
+        c.cotizacion,
+        c.efectivo,
+        c.div_victoria,
+        c.div_empate,
+        c.div_derrota,
+        c.posicion,
+	c.cantidad_compra,
+	c.cantidad_venta,
+	c.precio_compra,
+	c.precio_venta
+    from fut_clubes c
+        inner join fut_jugadores j
+            on (c.presidente = j.jugador_id);
+

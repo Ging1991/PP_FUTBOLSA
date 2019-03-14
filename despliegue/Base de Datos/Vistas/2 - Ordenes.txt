@@ -1,0 +1,17 @@
+-- 2) VISTA ORDENES *******************************************************
+create view fut_v_ordenes (orden_id, jugador_id, club_id, club, tipo, cantidad, precio, estado, es_emision, cotizacion) as
+    select
+        o.orden_id,
+        o.jugador_id,
+        o.club_id,
+        c.nombre as club,
+        o.tipo,
+        o.cantidad,
+        o.precio,
+        o.estado,
+        o.es_emision,
+        c.cotizacion
+    from fut_ordenes o
+        inner join fut_clubes c
+            on (o.club_id = c.club_id);
+

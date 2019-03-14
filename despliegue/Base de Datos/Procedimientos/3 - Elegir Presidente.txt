@@ -1,0 +1,44 @@
+-- 3) ELEGIR PRESIDENTE *****************************************************************
+
+create or replace function elegir_presidente(p_club int) returns void as $body$
+	
+    declare
+    	v_emision bigint;
+        v_posesion bigint;
+        v_accionista bigint;
+        v_club_id bigint;
+    
+    begin
+    	-- Averiguo cuantas acciones estan en posesion de accionistas
+    	select
+		sum(cantidad)
+		into v_emision
+        from fut_v_posesiones
+        where club_id = p_club
+        group by club_id;
+
+		-- Averiguo quien es el accionista que tiene mas acciones
+        select
+	    jugador_id,
+            club_id,
+            cantidad
+        into
+            v_accionista,
+            v_club_id,
+            v_posesion
+        from fut_posesiones
+        where club_id = p_club
+        order by cantidad, jugador_id
+        limit 1;
+        
+        -- Si el mayor accionista tiene mas del 50% se covierte en presidente
+        if ((v_posesion*2)>v_emision) then
+            update fut_clubes
+            set presidente = v_accionista
+            where club_id = p_club;       
+        end if;
+        
+	end;
+$body$ language plpgsql;
+
+

@@ -1,0 +1,13 @@
+-- 1) VISTA POSESIONES *****************************************************************************
+
+create view fut_v_posesiones (jugador_id, club_id, cantidad, club, cotizacion) as
+    select
+        p.jugador_id,
+        p.club_id,
+        p.cantidad,
+        c.nombre as club,
+        c.cotizacion
+    from fut_posesiones p
+        inner join fut_clubes c
+            on(p.club_id = c.club_id);
+

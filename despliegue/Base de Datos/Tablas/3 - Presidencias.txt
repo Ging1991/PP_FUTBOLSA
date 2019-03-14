@@ -1,0 +1,17 @@
+-- 3) ESQUEMA PRESIDENCIAS  ********************************************************************************
+create table fut_presidencias (
+    club_id bigint,
+    presidente bigint,
+    fecha_inicio date,
+    fecha_fin date,
+    constraint fut_presidencias_fk_club foreign key (club_id)
+        references fut_clubes (club_id) match simple
+    	on update no action
+	on delete no action,
+    constraint fut_presidencias_fk_presidente foreign key (presidente)
+        references fut_jugadores (jugador_id) match simple
+    	on update no action
+	on delete no action
+);
+
+

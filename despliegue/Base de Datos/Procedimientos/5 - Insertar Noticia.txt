@@ -1,0 +1,15 @@
+-- INSERTAR UNA NOTICIA Y DEVOLVER EL ID DE LA MISMA *****************************************************************
+create or replace function insertar_noticia(p_contenido text) returns bigint as $body$
+    declare
+    	v_noticia_id bigint;
+    begin
+        v_noticia_id := nextval('sec_id_noticias');
+        
+    	insert into fut_noticias (noticia_id, contenido)
+        values (v_noticia_id, p_contenido);
+        
+        return v_noticia_id;
+	end;
+$body$ language plpgsql;
+
+

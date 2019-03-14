@@ -1,0 +1,478 @@
+-- 1) ESQUEMA JUGADOR  *******************************************************************
+create sequence sec_id_jugador
+    start with 1
+    increment by 1
+    maxvalue 99999
+    minvalue 1;
+
+create table fut_jugadores (
+    jugador_id bigint default nextval('sec_id_jugador'),
+    usuario text default 'USUARIO',
+    password text default 'PASSWORD',
+    efectivo bigint default 10000,
+    posicion int default 100,
+    avatar text default 'AVATAR',
+    biografia text default 'BIOGRAFIA',
+    administrador bool default false,
+    constraint fut_jugadores_pk primary key (jugador_id),
+    constraint fut_jugadores_usuario_unico unique(usuario)
+);
+
+-- 2) ESQUEMA CLUBES  ********************************************************************************
+create sequence sec_id_club
+    start with 1
+    increment by 1
+    maxvalue 99999
+    minvalue 1;
+
+create table fut_clubes (
+    club_id bigint default nextval('sec_id_club'),
+    nombre text default 'CLUB',
+    presidente bigint default 1,
+    cotizacion bigint default 100,
+    efectivo bigint default 100000,
+    div_victoria bigint default 30,
+    div_empate bigint default 10,
+    div_derrota bigint default 0,
+    posicion bigint default 100,
+    cantidad_venta bigint default 1,
+    cantidad_compra bigint default 1,
+    precio_compra bigint default 1,
+    precio_venta bigint default 1,
+    constraint fut_clubes_pk primary key (club_id),
+    constraint fut_clubes_nombre_unico unique(nombre),
+    constraint fut_clubes_fk_presidente foreign key (presidente)
+        references fut_jugadores (jugador_id) match simple
+);
+
+-- 3) ESQUEMA PRESIDENCIAS  ********************************************************************************
+create table fut_presidencias (
+    club_id bigint,
+    presidente bigint,
+    fecha_inicio date,
+    fecha_fin date,
+    constraint fut_presidencias_fk_club foreign key (club_id)
+        references fut_clubes (club_id) match simple,
+    constraint fut_presidencias_fk_presidente foreign key (presidente)
+        references fut_jugadores (jugador_id) match simple
+);
+
+
+-- 4) ESQUEMA COTIZACIONES  ********************************************************************************
+create table fut_cotizaciones (
+    club_id bigint,
+    precio bigint default 10,
+    fecha date default CURRENT_DATE,
+    constraint fut_cotizaciones_fk_club foreign key (club_id)
+        references fut_clubes (club_id) match simple
+);
+
+
+-- 5) ESQUEMA POSESIONES  ********************************************************************************
+create table fut_posesiones (
+    jugador_id bigint,
+    club_id bigint,
+    cantidad bigint default 0,
+    constraint fut_posesiones_fk_jugador foreign key (jugador_id)
+        references fut_jugadores (jugador_id) match simple,
+    constraint fut_posesiones_fk_club foreign key (club_id)
+        references fut_clubes (club_id) match simple
+);
+
+
+-- 6) ESQUEMA ORDENES  ************************************************************
+create sequence sec_id_orden
+    start with 1
+    increment by 1
+    maxvalue 99999
+    minvalue 1;
+
+create table fut_ordenes (
+    orden_id bigint default nextval('sec_id_orden'),
+    jugador_id bigint,
+    club_id bigint,
+    tipo char(1) default 'R',
+    cantidad bigint default -1,
+    precio bigint default -1,
+    estado character default 'R',
+    es_emision bool default false,
+    constraint fut_ordenes_pk primary key (orden_id),
+    constraint fut_ordenes_fk_jugador foreign key (jugador_id)
+        references fut_jugadores (jugador_id) match simple,
+    constraint fut_ordenes_fk_club foreign key (club_id)
+        references fut_clubes (club_id) match simple
+);
+
+
+-- 7) ESQUEMA OPERACIONES  *******************************************************************
+create sequence sec_id_operacion
+    start with 1
+    increment by 1
+    maxvalue 99999
+    minvalue 1;
+
+create table fut_operaciones (
+    operacion_id bigint default nextval('sec_id_operacion'),
+    vendedor bigint,
+    comprador bigint,
+    club bigint,
+    cantidad bigint default -1,
+    precio bigint default -1,
+    emision bool default false,
+    fecha date default CURRENT_DATE,
+    constraint fut_operaciones_pk primary key (operacion_id),
+    constraint fut_operaciones_fk_comprador foreign key (comprador)
+        references fut_jugadores (jugador_id) match simple,
+    constraint fut_operaciones_fk_vendedor foreign key (vendedor)
+        references fut_jugadores (jugador_id) match simple,
+    constraint fut_operaciones_fk_club foreign key (club)
+        references fut_clubes (club_id) match simple
+);
+
+
+
+-- ESQUEMA RESULTADOS  ********************************************************************************
+create sequence sec_id_resultados
+    start with 1
+    increment by 1
+    maxvalue 99999
+    minvalue 1;
+
+create table fut_resultados (
+	resultado_id bigint default nextval('sec_id_resultados'),
+    club_local bigint,
+    club_visitante bigint,
+    goles_local bigint default 0,
+    goles_visitante bigint default 0,
+    constraint fut_resultados_pk primary key (resultado_id),
+    constraint fut_resultados_fk_club_local foreign key (club_local)
+    	references fut_clubes(club_id) match simple,
+    constraint fut_resultados_fk_club_visitante foreign key (club_visitante)
+    	references fut_clubes(club_id) match simple
+);
+
+-- ESQUEMA NOTICIAS  ********************************************************************************
+create sequence sec_id_noticias
+    start with 1
+    increment by 1
+    maxvalue 99999
+    minvalue 1;
+
+create table fut_noticias (
+	noticia_id bigint default nextval('sec_id_noticias'),
+    contenido text default 'CONTENIDO DE NOTICIA',
+    fecha date default CURRENT_DATE,
+    constraint fut_noticias_pk primary key (noticia_id)
+);
+
+
+-- ESQUEMA NOTIFICACIONES  ************************************************************
+create sequence sec_id_notificacion
+    start with 1
+    increment by 1
+    maxvalue 99999
+    minvalue 1;
+
+create table fut_notificaciones (
+    notificacion_id bigint default nextval('sec_id_notificacion'),
+    jugador_id bigint,
+    noticia_id bigint,
+    constraint fut_notificaciones_pk primary key (notificacion_id),
+    constraint fut_notificaciones_fk_jugador foreign key (jugador_id)
+        references fut_jugadores (jugador_id) match simple,
+    constraint fut_notificaciones_fk_noticia foreign key (noticia_id)
+        references fut_noticias (noticia_id) match simple
+);
+
+-- 1) VISTA POSESIONES *****************************************************************************
+create view fut_v_posesiones (jugador_id, club_id, cantidad, club, cotizacion) as
+    select
+        p.jugador_id,
+        p.club_id,
+        p.cantidad,
+        c.nombre as club,
+        c.cotizacion
+    from fut_posesiones p
+        inner join fut_clubes c
+            on(p.club_id = c.club_id);
+
+-- 2) VISTA ORDENES *******************************************************
+create view fut_v_ordenes (orden_id, jugador_id, club_id, club, tipo, cantidad, precio, estado, es_emision, cotizacion) as
+    select
+        o.orden_id,
+        o.jugador_id,
+        o.club_id,
+        c.nombre as club,
+        o.tipo,
+        o.cantidad,
+        o.precio,
+        o.estado,
+        o.es_emision,
+        c.cotizacion
+    from fut_ordenes o
+        inner join fut_clubes c
+            on (o.club_id = c.club_id);
+
+-- 3) VISTA CLUBES *******************************************************
+create view fut_v_clubes(club_id, club, presidente_id, presidente, cotizacion,
+	efectivo, div_victoria, div_empate, div_derrota, posicion,
+	cantidad_compra, cantidad_venta, precio_compra, precio_venta) as
+    select
+        c.club_id,
+        c.nombre as club,
+        c.presidente as presidente_id,
+        j.usuario as presidente,
+        c.cotizacion,
+        c.efectivo,
+        c.div_victoria,
+        c.div_empate,
+        c.div_derrota,
+        c.posicion,
+		c.cantidad_compra,
+		c.cantidad_venta,
+		c.precio_compra,
+		c.precio_venta
+    from fut_clubes c
+        inner join fut_jugadores j
+            on (c.presidente = j.jugador_id);
+
+-- 4) VSITA RANKING DE JUGADORES ************************************************************************
+create view fut_v_ranking_jugadores as
+    select
+	jugador_id,
+    	row_number() over
+    	    (order by efectivo desc, jugador_id asc) as posicion
+    from fut_jugadores;
+
+-- 5) VISTA RANKING DE CLUBES ********************************************************************
+create or replace view fut_v_ranking_clubes as
+    select
+        club_id,
+        row_number() over
+		(order by efectivo desc, club_id) AS posicion
+    from fut_clubes;
+
+-- 6) VISTA RESULTADOS *********************************************************************************
+create view fut_v_resultados(resultado_id, club_local, local, club_visitante, visitante, goles_local, goles_visitante) as
+    select
+        R.resultado_id,
+        R.club_local,
+        L.nombre as local,
+        R.club_visitante,
+        V.nombre as visitante,
+        R.goles_local,
+        R.goles_visitante
+    from fut_resultados R
+        inner join fut_clubes L
+            on (L.club_id = R.club_local)
+        inner join fut_clubes V
+            on (V.club_id = R.club_visitante);
+
+-- 7) VISTA NOTIFICACIONES
+create view fut_v_notificaciones as
+    select
+        ntf.notificacion_id,
+        ntf.jugador_id,
+        j.usuario,
+        ntf.noticia_id,
+        ntc.contenido,
+        ntc.fecha
+    from fut_notificaciones ntf
+        inner join fut_noticias ntc
+            on (ntf.noticia_id = ntc.noticia_id)
+        inner join fut_jugadores j
+            on (ntf.jugador_id = j.jugador_id);
+
+-- 1) CALCULAR RANKING DE CLUBES *****************************************************************
+create or replace function calcular_ranking_clubes() returns void as $body$
+	declare
+    	rec_posicion record;
+        cur_posicion cursor for select club_id, posicion from fut_v_ranking_clubes;
+    begin
+    	open cur_posicion;
+        loop
+        	fetch cur_posicion into rec_posicion;
+            exit when not found;
+            
+            -- Actualizo posiciones dentro del ranking
+            update fut_clubes
+			set posicion = rec_posicion.posicion
+			where club_id = rec_posicion.club_id;
+
+        end loop;
+        close cur_posicion;
+    end;
+$body$ language plpgsql;
+
+-- 2) CALCULAR RANKING DE JUGADORES *****************************************************************
+CREATE OR REPLACE FUNCTION public.calcular_ranking_jugadores(
+	)
+    RETURNS void
+    LANGUAGE 'plpgsql'
+
+    COST 100
+    VOLATILE 
+AS $BODY$
+
+	declare
+    	rec_posicion record;
+        cur_posicion cursor for select jugador_id, posicion from fut_v_ranking_jugadores;
+        
+    begin
+    	open cur_posicion;
+        loop
+        	fetch cur_posicion into rec_posicion;
+            exit when not found;
+            
+            -- Actualizo posiciones dentro del ranking
+            update fut_jugadores
+			set posicion = rec_posicion.posicion
+			where jugador_id = rec_posicion.jugador_id;
+
+        end loop;
+        close cur_posicion;
+    end;
+
+$BODY$;
+
+
+-- 3) ELEGIR PRESIDENTE *****************************************************************
+create or replace function elegir_presidente(p_club int) returns void as $body$
+    declare
+    	v_emision bigint;
+        v_posesion bigint;
+        v_accionista bigint;
+        v_club_id bigint;
+    begin
+    	-- Averiguo cuantas acciones estan en posesion de accionistas
+    	select
+		sum(cantidad)
+		into v_emision
+        from fut_v_posesiones
+        where club_id = p_club
+        group by club_id;
+
+		-- Averiguo quien es el accionista que tiene mas acciones
+        select
+	    jugador_id,
+            club_id,
+            cantidad
+        into
+            v_accionista,
+            v_club_id,
+            v_posesion
+        from fut_posesiones
+        where club_id = p_club
+        order by cantidad, jugador_id
+        limit 1;
+        
+        -- Si el mayor accionista tiene mas del 50% se covierte en presidente
+        if ((v_posesion*2)>v_emision) then
+            update fut_clubes
+            set presidente = v_accionista
+            where club_id = p_club;       
+        end if;
+        
+	end;
+$body$ language plpgsql;
+
+
+-- 4) TRIGGER NUEVA ORDEN ***************************************************
+create function fut_f_actualizar_precio() returns trigger language 'plpgsql' as $body$
+	declare
+    	v_precio int;
+    begin
+        -- Se ha cargado una compra
+        if (new.tipo = 'C') then
+          	select precio_compra
+            into v_precio
+            from fut_clubes
+            where club_id = new.club_id;
+
+            if (new.precio > v_precio) then
+                update fut_clubes
+                set precio_compra = new.precio
+                where club_id = new.club_id;
+
+                update fut_clubes
+                set cantidad_compra = new.cantidad
+                where club_id = new.club_id;
+            end if;
+            
+        end if;
+
+        -- Se ha cargado una venta
+        if (new.tipo = 'V') then
+            select precio_venta
+            into v_precio
+            from fut_clubes
+            where club_id = new.club_id;
+
+            if (new.precio < v_precio) then
+                update fut_clubes
+                set precio_venta = new.precio
+                where club_id = new.club_id;
+
+                update fut_clubes
+                set cantidad_venta = new.cantidad
+                where club_id = new.club_id;
+            end if;
+
+        end if;
+
+    	return new;
+	end;
+$body$;
+
+
+create trigger fut_t_actualizar_precio
+	before insert
+    on fut_ordenes
+    for each row
+    execute procedure  fut_f_actualizar_precio();
+
+
+-- INSERTAR UNA NOTICIA Y DEVOLVER EL ID DE LA MISMA *****************************************************************
+create or replace function insertar_noticia(p_contenido text) returns bigint as $body$
+    declare
+    	v_noticia_id bigint;
+    begin
+        v_noticia_id := nextval('sec_id_noticias');
+        
+    	insert into fut_noticias (noticia_id, contenido)
+        values (v_noticia_id, p_contenido);
+        
+        return v_noticia_id;
+	end;
+$body$ language plpgsql;
+
+-- INSERTAR DATOS INICIALES
+insert into fut_jugadores (usuario, password, efectivo, posicion, avatar, biografia, administrador)
+values ('Ging1991', '123456789', 50000, 1, 'Sin avatar', 'Administrador', true);
+
+insert into fut_clubes (nombre) values('Argentinos Juniors');
+insert into fut_clubes (nombre) values('Aldosivi');
+insert into fut_clubes (nombre) values('Banfield');
+insert into fut_clubes (nombre) values('Belgrano');
+insert into fut_clubes (nombre) values('Boca Juniors');
+insert into fut_clubes (nombre) values('Colon');
+insert into fut_clubes (nombre) values('Huracan');
+insert into fut_clubes (nombre) values('Independiente');
+insert into fut_clubes (nombre) values('Lanus');
+insert into fut_clubes (nombre) values('Newells Old Boys');
+insert into fut_clubes (nombre) values('Patronato');
+insert into fut_clubes (nombre) values('River Plate');
+insert into fut_clubes (nombre) values('Rosario Central');
+insert into fut_clubes (nombre) values('San Lorenzo');
+insert into fut_clubes (nombre) values('San Martin');
+insert into fut_clubes (nombre) values('Talleres');
+insert into fut_clubes (nombre) values('Tigre');
+insert into fut_clubes (nombre) values('Tucuman');
+insert into fut_clubes (nombre) values('Union');
+insert into fut_clubes (nombre) values('Velez Sarfield');
+insert into fut_clubes (nombre) values('Gimnasia de la Plata');
+insert into fut_clubes (nombre) values('Godoy Cruz');
+insert into fut_clubes (nombre) values('Estudiantes');
+insert into fut_clubes (nombre) values('Defensa y Justicia');
+insert into fut_clubes (nombre) values('Racing');
+

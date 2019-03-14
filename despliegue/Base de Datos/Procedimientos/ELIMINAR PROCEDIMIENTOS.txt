@@ -1,0 +1,12 @@
+-- ELIMINAR PROCEDIMIENTOS Y TRIGGERS ************************************************************
+
+-- 1) ELIMINO LOS PROCEDIMIENTOS
+drop function calcular_ranking_clubes();
+drop function calcular_ranking_jugadores();
+drop function elegir_presidente(p_club integer);
+drop function insertar_noticia(p_contenido text);
+
+-- 2) ELIMINO LOS TRIGGERS
+drop trigger fut_t_actualizar_precio on fut_ordenes;
+drop function fut_f_actualizar_precio();
+

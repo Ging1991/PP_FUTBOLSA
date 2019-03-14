@@ -1,0 +1,47 @@
+create function ingresar_compra_venta() returns trigger language 'plpgsql' as $body$
+	declare
+    	v_precio int;
+    begin
+        -- Se ha cargado una compra
+        if (new.tipo = 'C') then
+          	select precio_compra
+            into v_precio
+            from fut_clubes
+            where club_id = new.club_id;
+
+            if (new.precio > v_precio) then
+                update fut_clubes
+                set precio_compra = new.precio
+                where club_id = new.club_id;
+
+                update fut_clubes
+                set cantidad_compra = new.cantidad
+                where club_id = new.club_id;
+            end if;
+            
+        end if;
+
+        -- Se ha cargado una venta
+        if (new.tipo = 'V') then
+            select precio_venta
+            into v_precio
+            from fut_clubes
+            where club_id = new.club_id;
+
+            if (new.precio < v_precio) then
+                update fut_clubes
+                set precio_venta = new.precio
+                where club_id = new.club_id;
+
+                update fut_clubes
+                set cantidad_venta = new.cantidad
+                where club_id = new.club_id;
+            end if;
+
+        end if;
+
+    	return new;
+	end;
+$body$
+
+

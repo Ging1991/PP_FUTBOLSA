@@ -1,0 +1,15 @@
+create view fut_v_notificaciones as
+    select
+        ntf.notificacion_id,
+        ntf.jugador_id,
+        j.usuario,
+        ntf.noticia_id,
+        ntc.contenido,
+        ntc.fecha
+    from fut_notificaciones ntf
+        inner join fut_noticias ntc
+            on (ntf.noticia_id = ntc.noticia_id)
+        inner join fut_jugadores j
+            on (ntf.jugador_id = j.jugador_id);
+
+

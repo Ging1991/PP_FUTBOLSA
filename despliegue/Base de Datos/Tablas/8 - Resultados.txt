@@ -1,0 +1,20 @@
+-- ESQUEMA RESULTADOS  ********************************************************************************
+create sequence sec_id_resultados
+    start with 1
+    increment by 1
+    maxvalue 99999
+    minvalue 1;
+
+create table fut_resultados (
+	resultado_id bigint default nextval('sec_id_resultados'),
+    club_local bigint,
+    club_visitante bigint,
+    goles_local bigint,
+    goles_visitante bigint,
+    constraint fut_resultados_pk primary key (resultado_id),
+    constraint fut_resultados_fk_club_local foreign key (club_local)
+    	references fut_clubes(club_id) match simple,
+    constraint fut_resultados_fk_club_visitante foreign key (club_visitante)
+    	references fut_clubes(club_id) match simple
+);
+

@@ -1,0 +1,36 @@
+-- 2) CALCULAR RANKING DE JUGADORES *****************************************************************
+
+CREATE OR REPLACE FUNCTION public.calcular_ranking_jugadores(
+	)
+    RETURNS void
+    LANGUAGE 'plpgsql'
+
+    COST 100
+    VOLATILE 
+AS $BODY$
+
+	declare
+    	rec_posicion record;
+        cur_posicion cursor for select jugador_id, posicion from fut_v_ranking_jugadores;
+        
+    begin
+    	open cur_posicion;
+        loop
+        	fetch cur_posicion into rec_posicion;
+            exit when not found;
+            
+            -- Actualizo posiciones dentro del ranking
+            update fut_jugadores
+			set posicion = rec_posicion.posicion
+			where jugador_id = rec_posicion.jugador_id;
+
+        end loop;
+        close cur_posicion;
+    end;
+
+$BODY$;
+
+ALTER FUNCTION public.calcular_ranking_jugadores()
+    OWNER TO postgres;
+
+

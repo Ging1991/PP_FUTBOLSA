@@ -1,0 +1,28 @@
+-- 6) ESQUEMA ORDENES  ************************************************************
+create sequence sec_id_orden
+    start with 1
+    increment by 1
+    maxvalue 99999
+    minvalue 1;
+
+create table fut_ordenes (
+    orden_id bigint default nextval('sec_id_orden'),
+    jugador_id bigint,
+    club_id bigint,
+    tipo char(1) default 'R',
+    cantidad bigint default -1,
+    precio bigint default -1,
+    estado character default 'R',
+    es_emision bool default false,
+    constraint fut_ordenes_pk primary key (orden_id),
+    constraint fut_ordenes_fk_jugador foreign key (jugador_id)
+        references fut_jugadores (jugador_id) match simple
+    	on update no action
+	on delete no action,
+    constraint fut_ordenes_fk_club foreign key (club_id)
+        references fut_clubes (club_id) match simple
+    	on update no action
+	on delete no action
+);
+
+

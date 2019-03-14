@@ -1,0 +1,20 @@
+-- 1) ESQUEMA JUGADOR  *******************************************************************
+create sequence sec_id_jugador
+    start with 1
+    increment by 1
+    maxvalue 99999
+    minvalue 1;
+
+create table fut_jugadores (
+    jugador_id bigint default nextval('sec_id_jugador'),
+    usuario text default 'USUARIO',
+    password text default 'PASSWORD',
+    efectivo bigint default 10000,
+    posicion int default 100,
+    avatar text default 'AVATAR',
+    biografia text default 'BIOGRAFIA',
+    administrador bool default false,
+    constraint fut_jugadores_pk primary key (jugador_id),
+    constraint fut_jugadores_usuario_unico unique(usuario)
+);
+

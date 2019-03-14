@@ -1,0 +1,15 @@
+create view fut_v_resultados(resultado_id, club_local, local, club_visitante, visitante, goles_local, goles_visitante) as
+select
+	R.resultado_id,
+    R.club_local,
+    L.nombre as local,
+    R.club_visitante,
+    V.nombre as visitante,
+    R.goles_local,
+    R.goles_visitante
+from fut_resultados R
+	inner join fut_clubes L
+    	on (L.club_id = R.club_local)
+	inner join fut_clubes V
+    	on (V.club_id = R.club_visitante);
+

@@ -1,0 +1,8 @@
+-- ELIMINO LAS VISTAS ************************
+drop view fut_v_posesiones;
+drop view fut_v_clubes;
+drop view fut_v_ordenes;
+drop view fut_v_ranking_clubes;
+drop view fut_v_ranking_jugadores;
+drop view fut_v_notificaciones;
+drop view fut_v_resultados;

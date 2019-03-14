@@ -1,0 +1,22 @@
+-- 1) CALCULAR RANKING DE CLUBES *****************************************************************
+
+create or replace function calcular_ranking_clubes() returns void as $body$
+	declare
+    	rec_posicion record;
+        cur_posicion cursor for select club_id, posicion from fut_v_ranking_clubes;
+    begin
+    	open cur_posicion;
+        loop
+        	fetch cur_posicion into rec_posicion;
+            exit when not found;
+            
+            -- Actualizo posiciones dentro del ranking
+            update fut_clubes
+			set posicion = rec_posicion.posicion
+			where club_id = rec_posicion.club_id;
+
+        end loop;
+        close cur_posicion;
+    end;
+$body$ language plpgsql;
+

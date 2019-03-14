@@ -1,0 +1,99 @@
+-- 1) VISTA POSESIONES *****************************************************************************
+create view fut_v_posesiones (jugador_id, club_id, cantidad, club, cotizacion) as
+    select
+        p.jugador_id,
+        p.club_id,
+        p.cantidad,
+        c.nombre as club,
+        c.cotizacion
+    from fut_posesiones p
+        inner join fut_clubes c
+            on(p.club_id = c.club_id);
+
+-- 2) VISTA ORDENES *******************************************************
+create view fut_v_ordenes (orden_id, jugador_id, club_id, club, tipo, cantidad, precio, estado, es_emision, cotizacion) as
+    select
+        o.orden_id,
+        o.jugador_id,
+        o.club_id,
+        c.nombre as club,
+        o.tipo,
+        o.cantidad,
+        o.precio,
+        o.estado,
+        o.es_emision,
+        c.cotizacion
+    from fut_ordenes o
+        inner join fut_clubes c
+            on (o.club_id = c.club_id);
+
+-- 3) VISTA CLUBES *******************************************************
+create view fut_v_clubes(club_id, club, presidente_id, presidente, cotizacion,
+	efectivo, div_victoria, div_empate, div_derrota, posicion,
+	cantidad_compra, cantidad_venta, precio_compra, precio_venta) as
+    select
+        c.club_id,
+        c.nombre as club,
+        c.presidente as presidente_id,
+        j.usuario as presidente,
+        c.cotizacion,
+        c.efectivo,
+        c.div_victoria,
+        c.div_empate,
+        c.div_derrota,
+        c.posicion,
+		c.cantidad_compra,
+		c.cantidad_venta,
+		c.precio_compra,
+		c.precio_venta
+    from fut_clubes c
+        inner join fut_jugadores j
+            on (c.presidente = j.jugador_id);
+
+-- 4) VSITA RANKING DE JUGADORES ************************************************************************
+create view fut_v_ranking_jugadores as
+    select
+	jugador_id,
+    	row_number() over
+    	    (order by efectivo desc, jugador_id asc) as posicion
+    from fut_jugadores;
+
+-- 5) VISTA RANKING DE CLUBES ********************************************************************
+create or replace view fut_v_ranking_clubes as
+    select
+        club_id,
+        row_number() over
+		(order by efectivo desc, club_id) AS posicion
+    from fut_clubes;
+
+-- 6) VISTA RESULTADOS *********************************************************************************
+create view fut_v_resultados(resultado_id, club_local, local, club_visitante, visitante, goles_local, goles_visitante) as
+    select
+        R.resultado_id,
+        R.club_local,
+        L.nombre as local,
+        R.club_visitante,
+        V.nombre as visitante,
+        R.goles_local,
+        R.goles_visitante
+    from fut_resultados R
+        inner join fut_clubes L
+            on (L.club_id = R.club_local)
+        inner join fut_clubes V
+            on (V.club_id = R.club_visitante);
+
+-- 7) VISTA NOTIFICACIONES
+create view fut_v_notificaciones as
+    select
+        ntf.notificacion_id,
+        ntf.jugador_id,
+        j.usuario,
+        ntf.noticia_id,
+        ntc.contenido,
+        ntc.fecha
+    from fut_notificaciones ntf
+        inner join fut_noticias ntc
+            on (ntf.noticia_id = ntc.noticia_id)
+        inner join fut_jugadores j
+            on (ntf.jugador_id = j.jugador_id);
+

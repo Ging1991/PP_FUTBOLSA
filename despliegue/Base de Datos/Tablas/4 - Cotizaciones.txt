@@ -1,0 +1,12 @@
+-- 4) ESQUEMA COTIZACIONES  ********************************************************************************
+create table fut_cotizaciones (
+    club_id bigint,
+    precio bigint not null,
+    fecha date,
+    constraint fut_cotizaciones_fk_club foreign key (club_id)
+        references fut_clubes (club_id) match simple
+    	on update no action
+	on delete no action
+);
+
+

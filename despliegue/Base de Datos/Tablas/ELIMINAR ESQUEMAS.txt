@@ -1,0 +1,34 @@
+-- ELIMINAR ESQUEMAS *********************************************************
+
+-- 1) BORRO LAS TABLAS
+delete from fut_resultados;
+delete from fut_notificaciones;
+delete from fut_noticias;
+delete from fut_operaciones;
+delete from fut_posesiones;
+delete from fut_ordenes;
+delete from fut_presidencias;
+delete from fut_cotizaciones;
+delete from fut_clubes;
+delete from fut_jugadores;
+
+-- 2) ELIMINO LAS TABLAS
+drop table fut_resultados;
+drop table fut_notificaciones;
+drop table fut_noticias;
+drop table fut_operaciones;
+drop table fut_posesiones;
+drop table fut_ordenes;
+drop table fut_presidencias;
+drop table fut_cotizaciones;
+drop table fut_clubes;
+drop table fut_jugadores;
+
+-- 3) ELIMINO LAS SECUENCIAS
+drop sequence sec_id_noticias;
+drop sequence sec_id_resultados;
+drop sequence sec_id_club;
+drop sequence sec_id_jugador;
+drop sequence sec_id_orden;
+drop sequence sec_id_operacion;
+drop sequence sec_id_notificacion;

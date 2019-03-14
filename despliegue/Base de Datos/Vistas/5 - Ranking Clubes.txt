@@ -1,0 +1,9 @@
+-- 5) VISTA RANKING DE CLUBES ********************************************************************
+create or replace view fut_v_ranking_clubes as
+    select
+        club_id,
+        row_number() over
+		(order by efectivo desc, club_id) AS posicion
+    from fut_clubes;
+
+

@@ -1,0 +1,20 @@
+-- 6) ESQUEMA NOTIFICACIONES  ************************************************************
+create sequence sec_id_notificacion
+    start with 1
+    increment by 1
+    maxvalue 99999
+    minvalue 1;
+
+create table fut_notificaciones (
+    notificacion_id bigint default nextval('sec_id_notificacion'),
+    jugador_id bigint,
+    noticia_id bigint,
+    constraint fut_notificaciones_pk primary key (notificacion_id),
+    constraint fut_notificaciones_fk_jugador foreign key (jugador_id)
+        references fut_jugadores (jugador_id) match simple,
+    constraint fut_notificaciones_fk_noticia foreign key (noticia_id)
+        references fut_noticias (noticia_id) match simple
+);
+
+
+

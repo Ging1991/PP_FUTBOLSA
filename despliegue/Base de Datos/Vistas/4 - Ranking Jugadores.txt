@@ -1,0 +1,8 @@
+-- 4) VSITA RANKING DE JUGADORES ************************************************************************
+create view fut_v_ranking_jugadores as
+    select
+	jugador_id,
+    	row_number() over
+    	    (order by efectivo desc, jugador_id asc) as posicion
+    from fut_jugadores;
+

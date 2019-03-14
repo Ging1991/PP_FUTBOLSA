@@ -1,0 +1,16 @@
+-- 5) ESQUEMA POSESIONES  ********************************************************************************
+create table fut_posesiones (
+    jugador_id bigint,
+    club_id bigint,
+    cantidad bigint not null,
+    constraint fut_posesiones_fk_jugador foreign key (jugador_id)
+        references fut_jugadores (jugador_id) match simple
+    	on update no action
+	on delete no action,
+    constraint fut_posesiones_fk_club foreign key (club_id)
+        references fut_clubes (club_id) match simple
+    	on update no action
+	on delete no action
+);
+
+

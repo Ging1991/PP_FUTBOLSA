@@ -1,0 +1,33 @@
+-- 7) ESQUEMA OPERACIONES  *******************************************************************
+create sequence sec_id_operacion
+    start with 1
+    increment by 1
+    maxvalue 99999
+    minvalue 1;
+
+create table fut_operaciones (
+    operacion_id bigint default nextval('sec_id_operacion'),
+    vendedor bigint,
+    comprador bigint,
+    club bigint,
+    cantidad bigint default -1,
+    precio bigint default -1,
+    emision bool default false,
+    fecha date default CURRENT_DATE,
+    constraint fut_operaciones_pk primary key (operacion_id),
+    constraint fut_operaciones_fk_comprador foreign key (comprador)
+        references fut_jugadores (jugador_id) match simple
+    	on update no action
+	on delete no action,
+    constraint fut_operaciones_fk_vendedor foreign key (vendedor)
+        references fut_jugadores (jugador_id) match simple
+    	on update no action
+	on delete no action,
+    constraint fut_operaciones_fk_club foreign key (club)
+        references fut_clubes (club_id) match simple
+    	on update no action
+	on delete no action
+);
+
+
+

@@ -1,0 +1,16 @@
+create view fut_v_ordenes as
+    select
+        o.orden_id,
+        o.jugador_id,
+        o.club_id,
+        o.tipo as operacion,
+        o.cantidad,
+        o.precio,
+        j.usuario as jugador,
+        c.nombre as club
+
+    from fut_ordenes o
+        inner join fut_jugadores j
+            on (o.jugador_id = j.jugador_id)
+        inner join fut_clubes c
+            on (c.club_id = o.club_id);
